@@ -1,8 +1,10 @@
-/*
-7 * Brandon Izor
+/* 
+ * Brandon Izor
  * CS350
- * Project3
- * A class to generate a main window and process operations
+ * Project5
+ * A class to generate a main window and process operations,
+ * including opening files and saving files
+ * Can be launched with an existing filename as a command line argument
  * 
  */
 import java.awt.Event.*;
@@ -33,6 +35,8 @@ public class MainWindow extends JFrame implements ActionListener {
 	JButton clear;
 	JButton open;
 	JButton save;
+	
+	public int recordCounter = 1;
 
 	ArrayList<CDriver> drivers = new ArrayList<CDriver>();
 	
@@ -115,7 +119,61 @@ public class MainWindow extends JFrame implements ActionListener {
 		save.addActionListener(this);
 		c.add(save);
 		
-		if (fileName != null) {
+		if (fileName != null) { //if their is a file as an argument, open and read it before displaying
+			//read in from the file
+			File f = new File(fileName);
+			FileReader fr;
+			try {
+				fr = new FileReader(f);
+				BufferedReader br = new BufferedReader(fr);
+				String line;
+				drivers.clear();
+				lst.clear();
+				while ((line = br.readLine()) != null) { // reads a single line and makes a CDriver instance
+					String[] tokens = line.split(":");
+					CDriver loadedDriver = new CDriver(); //instantiate and empty CDriver
+					//System.out.print(tokens[0]);
+					loadedDriver.setCustomerNumber(Integer.parseInt(tokens[0]));
+					loadedDriver.setCustomerName(tokens[1]);
+					loadedDriver.setDrivingYears(Integer.parseInt(tokens[2]));
+					if (Integer.parseInt(tokens[3]) == 1) {
+						loadedDriver.setJeepOwner(true);
+					} else {
+						loadedDriver.setJeepOwner(false);
+					}
+					String modelString = tokens[4];
+					boolean[] loadedModels = new boolean[5];
+					for (int i = 0; i < modelString.length(); i++) {
+						int cha = modelString.charAt(i);
+						if (cha == 1) {
+							loadedModels[i] = true;
+						}
+						else {
+							loadedModels[i] = false;
+						}
+					}
+					loadedDriver.setModels(loadedModels);
+					loadedDriver.setTransmission(Integer.parseInt(tokens[5]));
+					drivers.add(loadedDriver);
+					String s = "";
+					s += loadedDriver.stringify();
+					s += "\n";
+					lst.addElement(s);
+					
+				}
+				CDriver lastDriver = drivers.get(drivers.size()-1);
+				recordCounter = lastDriver.getCustomerNumber();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			
 		}
 		
@@ -131,16 +189,15 @@ public class MainWindow extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == add) {
 			//launch dialog box
-			Dialog d = new Dialog(this, "Add a Test Driver",1);
+			Dialog d = new Dialog(this, "Add a Test Driver",1,recordCounter);
 			if (!d.isCancelled()) {
 				CDriver answer = d.getRecord();
 				String s = "";
 				drivers.add(answer);
-				
-				
-					s += answer.stringify();
-					s += "\n";
-					lst.addElement(s);
+				s += answer.stringify();
+				s += "\n";
+				lst.addElement(s);
+				recordCounter++;
 				}
 			}
 		
@@ -207,7 +264,7 @@ public class MainWindow extends JFrame implements ActionListener {
 							else {
 								loadedModels[i] = false;
 							}
-							System.out.println(loadedModels[0]);
+							//System.out.println(loadedModels[0]);
 						}
 						loadedDriver.setModels(loadedModels);
 						loadedDriver.setTransmission(Integer.parseInt(tokens[5]));
@@ -218,6 +275,8 @@ public class MainWindow extends JFrame implements ActionListener {
 						lst.addElement(s);
 						
 					}
+					CDriver lastDriver = drivers.get(drivers.lastIndexOf(drivers));
+					recordCounter = lastDriver.getCustomerNumber();
 					
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -230,6 +289,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		String defaultFile = null;
 		if (args.length>0) {
 			defaultFile = args[0];
+			//System.out.println(args[0]);
 		}
 		MainWindow mainWnd = new MainWindow(defaultFile);
 		mainWnd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

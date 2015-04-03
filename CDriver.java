@@ -1,7 +1,7 @@
 /*
  * Brandon Izor
  * CS350
- * Project3
+ * Project5
  * A record class containing the information of a test driver
  * 
  */
@@ -63,7 +63,7 @@ public class CDriver {
 		if (isJeepOwner == true) {s+= "Yes \t               ";}
 		if (isJeepOwner == false) {s+= "No \t                ";}
 		
-		System.out.print("CDriver at bool 0 "+models[0]);
+		//System.out.print("CDriver at bool 0 "+models[0]);
 		if (models[0] == true) {s+="C";}
 		else {s+="-";}
 		if (models[1] == true) {s+="G";}

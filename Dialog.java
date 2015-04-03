@@ -1,7 +1,7 @@
 /*
  * Brandon Izor
  * CS350
- * Project3
+ * Project5
  * A class launched by MainWindow to display a dialog box
  * and create and return a CDriver object
  * or edit an existing CDriver object and return it
@@ -65,16 +65,18 @@ public class Dialog extends JDialog implements ActionListener {
 	private boolean cancelled;
 	public boolean isCancelled() { return cancelled;}
 	
-	int nextDriverNumber = 1;
-	String strDriveNum = String.valueOf(nextDriverNumber);
+	
+	//String strDriveNum = String.valueOf(nextDriverNumber);
 	
 	public Dialog(CDriver rec) {
 		//TODO initialize the dialog box using an existing CDriver object
 	}
 	
-	public Dialog(JFrame owner, String title, int initVal) {
+	public Dialog(JFrame owner, String title, int initVal, int cusNumber) {
 		//TODO initialize the CDriver object
 		super(owner,title,true);
+		
+		customerNumber = cusNumber;
 		
 		Container c = getContentPane();
 		c.setLayout(null);
@@ -85,7 +87,7 @@ public class Dialog extends JDialog implements ActionListener {
 		labelCustomerNo.setLocation(50,50);
 		c.add(labelCustomerNo);
 		
-		cusNum = new JLabel(String.format("%05d", nextDriverNumber));
+		cusNum = new JLabel(String.format("%05d", cusNumber));
 		cusNum.setSize(100,50);;
 		cusNum.setLocation(150,38);
 		c.add(cusNum);
